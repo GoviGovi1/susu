@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0d17">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Susu</title>
+<style>
+:root{
+  --bg:#0b0d17;--card:#151827;--ink:#eef0fa;--mute:#8b90a8;--line:#23273a;
+  --g:#4ade80;--gb:rgba(74,222,128,.12);--r:#fb7185;--rb:rgba(251,113,133,.12);
+  --acc:#a78bfa;--seg:#1d2133;--inp:#1a1e2e;--nav:rgba(21,24,39,.92);
+  --sh:0 10px 30px rgba(0,0,0,.35);--warn:#fbbf24;--wb:rgba(251,191,36,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Segoe UI,Roboto,sans-serif;padding:env(safe-area-inset-top) 0 110px}
+.wrap{max-width:520px;margin:0 auto;padding:12px 18px}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 2px 4px}
+header .d{color:var(--mute);font-size:13px;font-weight:500}
+header h1{margin:2px 0 0;font-size:24px;font-weight:800;letter-spacing:-.5px}
+.av{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;display:grid;place-items:center;font-weight:800;border:0;font-size:16px}
+.hero{margin:16px 0;border-radius:28px;padding:22px;color:#fff;background:radial-gradient(120% 90% at 100% 0%,#ec4899 0%,transparent 55%),linear-gradient(135deg,#4c1d95,#6d28d9 45%,#2563eb);box-shadow:0 18px 40px rgba(109,40,217,.35);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;border:30px solid rgba(255,255,255,.07);right:-70px;bottom:-110px}
+.hero .l{opacity:.8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.hero .big{font-size:34px;font-weight:800;letter-spacing:-1px;margin:4px 0 2px}
+.hero .sub{opacity:.85;font-size:14px}
+.hstats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.hstats div{background:rgba(255,255,255,.13);border-radius:16px;padding:10px 12px}
+.hstats small{opacity:.8;font-size:11px;display:block}.hstats b{display:block;font-size:16px;margin-top:2px}
+.card{background:var(--card);border-radius:24px;padding:16px 18px;margin:12px 0;box-shadow:var(--sh)}
+.card h3{margin:0 0 10px;font-size:16px;font-weight:700}
+.sec{font-size:18px;font-weight:800;letter-spacing:-.3px;margin:20px 2px 8px;display:flex;justify-content:space-between;align-items:baseline}
+.sec small{font-size:13px;color:var(--mute);font-weight:500}
+.mute{color:var(--mute);font-size:13px}.g{color:var(--g)}.r{color:var(--r)}.w{color:var(--warn)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.pill.g{background:var(--gb);color:var(--g)}.pill.r{background:var(--rb);color:var(--r)}.pill.w{background:var(--wb);color:var(--warn)}.pill.a{background:rgba(167,139,250,.15);color:var(--acc)}
+.bar{height:8px;border-radius:8px;background:var(--seg);overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#7c3aed,#2563eb);transition:width .3s}
+.btn{border:0;background:linear-gradient(135deg,#6d28d9,#2563eb);color:#fff;border-radius:16px;padding:14px 16px;font:inherit;font-weight:700;width:100%;cursor:pointer}
+.btn.s{background:var(--seg);color:var(--ink)}.btn.d{background:var(--rb);color:var(--r)}.btn.wa{background:#25D366;color:#fff}
+.btn.sm{padding:9px 12px;border-radius:12px;width:auto;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+label{display:block;font-size:13px;color:var(--mute);margin:12px 0 5px;font-weight:600}
+input,select,textarea{width:100%;border:1px solid var(--line);background:var(--inp);color:var(--ink);border-radius:14px;padding:12px;font:inherit;font-size:16px}
+textarea{min-height:70px;resize:vertical}
+.seg{display:flex;background:var(--seg);border-radius:14px;padding:4px;gap:2px;flex-wrap:wrap}
+.seg button{flex:1;border:0;background:none;padding:9px 6px;border-radius:11px;font:inherit;color:var(--mute);font-weight:600;min-width:70px;cursor:pointer}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.fab{position:fixed;right:22px;bottom:100px;width:58px;height:58px;border-radius:20px;border:0;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-size:30px;box-shadow:0 12px 28px rgba(124,58,237,.45);z-index:5;cursor:pointer}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));width:min(340px,calc(100% - 40px));background:var(--nav);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:26px;display:flex;padding:6px;box-shadow:var(--sh);border:1px solid var(--line);z-index:6}
+nav button{flex:1;border:0;background:none;border-radius:20px;padding:8px 0 6px;font:inherit;font-size:11px;font-weight:700;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+nav button.on{background:var(--seg);color:var(--acc)}
+nav svg{width:22px;height:22px}
+.sheet{position:fixed;inset:0;background:rgba(10,10,25,.55);display:none;align-items:flex-end;z-index:20}
+.sheet.on{display:flex}
+.sheet .in{background:var(--bg);width:100%;max-width:520px;margin:0 auto;border-radius:28px 28px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.lnk{color:var(--acc);background:none;border:0;font:inherit;font-weight:600;padding:0;cursor:pointer}
+.empty{color:var(--mute);text-align:center;padding:28px 12px}
+.member{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.member:first-child{border-top:0}
+.ci{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(135deg,#6d28d9,#2563eb)}
+.ci.warn{background:linear-gradient(135deg,#b45309,#f59e0b)}
+.ci.ok{background:linear-gradient(135deg,#15803d,#4ade80)}
+.member .m{flex:1;min-width:0}.member .m b{display:block;font-size:14px}.member .m small{color:var(--mute);font-size:12px}
+.chk{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);background:var(--inp);appearance:none;-webkit-appearance:none;cursor:pointer;flex:none;position:relative}
+.chk:checked{background:linear-gradient(135deg,#6d28d9,#2563eb);border-color:transparent}
+.chk:checked:after{content:"✓";color:#fff;position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-weight:800}
+.round{background:var(--card);border-radius:20px;padding:14px 16px;margin:10px 0;box-shadow:var(--sh);border:1px solid transparent}
+.round.cur{border-color:rgba(167,139,250,.45)}
+.round.done{opacity:.75}
+.gcard{background:var(--card);border-radius:20px;padding:16px;margin:10px 0;box-shadow:var(--sh);cursor:pointer;border:1px solid transparent}
+.gcard:active{transform:scale(.99)}
+.gcard.active{border-color:rgba(167,139,250,.5)}
+.drag{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--seg);border-radius:14px;margin:6px 0;cursor:grab}
+.drag .handle{color:var(--mute);font-size:18px;letter-spacing:-2px}
+.ob{position:fixed;inset:0;z-index:30;overflow:auto;background:radial-gradient(90% 50% at 100% 0%,rgba(236,72,153,.2),transparent 60%),radial-gradient(80% 50% at 0% 10%,rgba(109,40,217,.25),transparent 60%),var(--bg);display:none;padding:env(safe-area-inset-top) 0 30px}
+.ob.on{display:block}
+.obw{max-width:480px;margin:0 auto;padding:48px 22px}
+.obw h1{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1.15;margin:18px 0 10px}
+.oblogo{width:64px;height:64px;border-radius:22px;background:linear-gradient(135deg,#7c3aed,#2563eb);display:grid;place-items:center;font-size:28px;font-weight:900;color:#fff;box-shadow:0 14px 30px rgba(124,58,237,.4)}
+.gap{height:10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--seg);border-radius:16px;padding:12px}
+.stat small{color:var(--mute);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.stat b{display:block;font-size:18px;margin-top:4px}
+.back{display:inline-flex;align-items:center;gap:4px;color:var(--acc);background:none;border:0;font:inherit;font-weight:700;padding:0;margin-bottom:8px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><div class="d" id="hDate"></div><h1 id="hi">Susu</h1></div>
+    <button class="av" id="av" type="button" onclick="goTab('set')">S</button>
+  </header>
+  <main id="view"></main>
+</div>
+<button class="fab" id="fab" type="button" onclick="onFab()" aria-label="Add">+</button>
+<nav id="nav"></nav>
+<div class="sheet" id="sheet" onclick="sheetBackdrop(event)"><div class="in" id="sheetIn"></div></div>
+<div class="ob" id="ob"></div>
+
+<script>
+const K = 'susu-v1';
+const $ = id => document.getElementById(id);
+const CURRENCIES = ['GHS','NGN','USD','EUR','GBP','KES','XOF'];
+const FREQ = {daily:'Daily',weekly:'Weekly',monthly:'Monthly'};
+const FREQ_DAYS = {daily:1,weekly:7,monthly:30};
+
+let S = load();
+let tab = 'home';
+let viewGroupId = null;
+let viewRoundId = null;
+let draftMembers = [];
+
+function load(){
+  try{
+    const raw = localStorage.getItem(K);
+    if(!raw) return {groups:[], name:'', v:1};
+    const d = JSON.parse(raw);
+    if(!d.groups) d.groups = [];
+    if(!d.v) d.v = 1;
+    return d;
+  }catch(e){ return {groups:[], name:'', v:1}; }
+}
+function persist(){ localStorage.setItem(K, JSON.stringify(S)); }
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function money(n, cur){
+  const v = Number(n)||0;
+  const abs = Math.abs(v).toLocaleString('en-GH',{minimumFractionDigits:0,maximumFractionDigits:2});
+  return (v<0?'-':'') + (cur||'GHS') + ' ' + abs;
+}
+function fmtDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso + (iso.length===10?'T12:00:00':''));
+  if(isNaN(d)) return iso;
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function addDays(iso, n){
+  const d = new Date(iso + 'T12:00:00');
+  d.setDate(d.getDate() + n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function addMonths(iso, n){
+  const d = new Date(iso + 'T12:00:00');
+  d.setMonth(d.getMonth() + n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function nextDate(start, freq, i){
+  if(freq==='daily') return addDays(start, i);
+  if(freq==='weekly') return addDays(start, i*7);
+  return addMonths(start, i);
+}
+function initials(name){
+  const p = String(name||'?').trim().split(/\s+/);
+  return ((p[0]&&p[0][0]||'?') + (p[1]&&p[1][0]||'')).toUpperCase();
+}
+function waPhone(phone){
+  let p = String(phone||'').replace(/[^\d+]/g,'');
+  if(p.startsWith('+')) p = p.slice(1);
+  if(p.startsWith('0')) p = '233' + p.slice(1);
+  if(p.length===9 && p[0]==='2') p = '233' + p; // rare
+  return p;
+}
+
+function getGroup(id){ return (S.groups||[]).find(g => g.id===id); }
+function pot(g){ return (Number(g.amount)||0) * (g.members||[]).length; }
+
+function buildRounds(g){
+  const members = g.members || [];
+  const n = members.length;
+  const rounds = [];
+  for(let i=0;i<n;i++){
+    const mid = members[i].id;
+    rounds.push({
+      id: uid(),
+      index: i+1,
+      date: nextDate(g.startDate, g.frequency, i),
+      collectorId: mid,
+      payments: {}, // memberId -> {paid:true, date:'YYYY-MM-DD'}
+      payoutDone: false,
+      payoutDate: null
+    });
+  }
+  return rounds;
+}
+
+function roundStats(g, r){
+  const members = g.members||[];
+  let paid = 0;
+  const unpaid = [];
+  for(const m of members){
+    const p = r.payments && r.payments[m.id];
+    if(p && p.paid) paid++;
+    else unpaid.push(m);
+  }
+  const expected = members.length * (Number(g.amount)||0);
+  const collected = paid * (Number(g.amount)||0);
+  return {paid, total: members.length, unpaid, expected, collected, complete: paid===members.length};
+}
+
+function currentRound(g){
+  const rounds = g.rounds||[];
+  for(const r of rounds){
+    if(!r.payoutDone) return r;
+  }
+  return rounds[rounds.length-1] || null;
+}
+
+function memberDebt(g, memberId){
+  let owed = 0, paidAmt = 0;
+  const amt = Number(g.amount)||0;
+  for(const r of (g.rounds||[])){
+    if(r.payoutDone){
+      const p = r.payments && r.payments[memberId];
+      if(p && p.paid) paidAmt += amt;
+      else owed += amt;
+    } else {
+      // current / future: only count if round has started (any payment or date <= today) or is current
+      const cur = currentRound(g);
+      if(cur && cur.id===r.id){
+        const p = r.payments && r.payments[memberId];
+        if(p && p.paid) paidAmt += amt;
+        else owed += amt; // outstanding for current round
+      }
+    }
+  }
+  return {owed, paidAmt};
+}
+
+function groupProgress(g){
+  const rounds = g.rounds||[];
+  if(!rounds.length) return 0;
+  const done = rounds.filter(r => r.payoutDone).length;
+  return done / rounds.length;
+}
+
+function totalCollected(g){
+  let t = 0;
+  const amt = Number(g.amount)||0;
+  for(const r of (g.rounds||[])){
+    for(const m of (g.members||[])){
+      const p = r.payments && r.payments[m.id];
+      if(p && p.paid) t += amt;
+    }
+  }
+  return t;
+}
+
+function outstandingDebts(g){
+  const list = [];
+  for(const m of (g.members||[])){
+    const d = memberDebt(g, m.id);
+    if(d.owed > 0) list.push({member:m, owed:d.owed});
+  }
+  return list.sort((a,b)=>b.owed-a.owed);
+}
+
+/* —— Navigation —— */
+function goTab(t){
+  tab = t;
+  if(t!=='group' && t!=='round'){ viewGroupId=null; viewRoundId=null; }
+  render();
+  scrollTo(0,0);
+}
+function openGroup(id){
+  viewGroupId = id;
+  viewRoundId = null;
+  tab = 'group';
+  render();
+  scrollTo(0,0);
+}
+function openRound(gid, rid){
+  viewGroupId = gid;
+  viewRoundId = rid;
+  tab = 'round';
+  render();
+  scrollTo(0,0);
+}
+function onFab(){
+  if(tab==='home' || tab==='groups') openCreateGroup();
+  else if(tab==='group' && viewGroupId) openRoundSheet();
+  else openCreateGroup();
+}
+function sheetBackdrop(e){ if(e.target=== $('sheet')) closeSheet(); }
+function closeSheet(){ $('sheet').classList.remove('on'); }
+function openSheet(html){ $('sheetIn').innerHTML = html; $('sheet').classList.add('on'); }
+
+/* —— Icons —— */
+const IC = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg>',
+  groups:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><circle cx="16.5" cy="9.5" r="2.5"/><path d="M3.5 19c.8-3 2.8-4.5 5.5-4.5s4.7 1.5 5.5 4.5"/><path d="M14 19c.4-1.8 1.6-2.8 3.3-2.8 1.4 0 2.4.7 3 2"/></svg>',
+  set:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>'
+};
+
+function navR(){
+  const items = [['home','Home'],['groups','Groups'],['set','Settings']];
+  $('nav').innerHTML = items.map(([k,n]) =>
+    `<button type="button" class="${(tab===k || (k==='groups'&&(tab==='group'||tab==='round')))?'on':''}" onclick="goTab('${k}')">${IC[k]}${n}</button>`
+  ).join('');
+  const showFab = tab==='home'||tab==='groups'||tab==='group';
+  $('fab').style.display = showFab ? 'block' : 'none';
+}
+
+function greet(){
+  const h = new Date().getHours();
+  const g = h<5?'Good night':h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  const name = S.name || 'friend';
+  $('hi').textContent = (tab==='home' ? (g+', '+name) : (tab==='groups'?'Groups':tab==='set'?'Settings':tab==='group'?(getGroup(viewGroupId)||{}).name||'Group':tab==='round'?'Round':'Susu'));
+  $('hDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'});
+  $('av').textContent = (name[0]||'S').toUpperCase();
+}
+
+/* —— Render —— */
+function render(){
+  greet();
+  navR();
+  const v = $('view');
+  if(tab==='home') v.innerHTML = renderHome();
+  else if(tab==='groups') v.innerHTML = renderGroups();
+  else if(tab==='group') v.innerHTML = renderGroupDetail();
+  else if(tab==='round') v.innerHTML = renderRoundDetail();
+  else if(tab==='set') v.innerHTML = renderSettings();
+  else v.innerHTML = renderHome();
+}
+
+function renderHome(){
+  const groups = S.groups||[];
+  if(!groups.length){
+    return `<div class="hero"><div class="l">Welcome</div><div class="big">Start a Susu</div><div class="sub">Track group contributions, who has paid, and who collects next.</div></div>
+      <div class="card"><p class="mute" style="margin:0 0 14px">Create your first group — add members, set the amount, and Susu builds the payout schedule for you.</p>
+      <button class="btn" type="button" onclick="openCreateGroup()">Create group</button></div>`;
+  }
+  // Prefer active group (most recent with unfinished round)
+  let focus = groups.find(g => (g.rounds||[]).some(r => !r.payoutDone)) || groups[0];
+  const cur = currentRound(focus);
+  const collector = cur && (focus.members||[]).find(m => m.id===cur.collectorId);
+  const st = cur ? roundStats(focus, cur) : null;
+  const prog = groupProgress(focus);
+  const debts = outstandingDebts(focus);
+  const nextTxt = cur ? ((collector?collector.name:'?') + ' · ' + fmtDate(cur.date)) : 'All rounds done';
+
+  let html = `<div class="hero">
+    <div class="l">${esc(focus.name)}</div>
+    <div class="big">${money(pot(focus), focus.currency)}</div>
+    <div class="sub">Pot per round · ${FREQ[focus.frequency]||focus.frequency}</div>
+    <div class="hstats">
+      <div><small>Next payout</small><b>${esc(collector?collector.name:'—')}</b></div>
+      <div><small>When</small><b>${cur?esc(fmtDate(cur.date)):'Done'}</b></div>
+    </div>
+  </div>`;
+
+  html += `<div class="card">
+    <div class="row"><h3 style="margin:0">Current round${cur?' #'+cur.index:''}</h3>
+      ${st?`<span class="pill ${st.complete?'g':'w'}">${st.paid}/${st.total} paid</span>`:''}
+    </div>
+    ${st?`<div class="bar"><i style="width:${(st.paid/Math.max(1,st.total))*100}%"></i></div>
+    <div class="row mute"><span>Collected ${money(st.collected, focus.currency)}</span><span>of ${money(st.expected, focus.currency)}</span></div>
+    <div class="actions">
+      <button class="btn sm" type="button" onclick="openGroup('${focus.id}')">Open group</button>
+      ${cur?`<button class="btn sm s" type="button" onclick="openRound('${focus.id}','${cur.id}')">Mark payments</button>`:''}
+      <button class="btn sm wa" type="button" onclick="shareGroupStatus('${focus.id}')">Share status</button>
+    </div>`:'<p class="mute">All payouts complete.</p>'}
+  </div>`;
+
+  html += `<div class="statgrid">
+    <div class="stat"><small>Collected</small><b>${money(totalCollected(focus), focus.currency)}</b></div>
+    <div class="stat"><small>Progress</small><b>${Math.round(prog*100)}%</b></div>
+  </div>`;
+
+  if(debts.length){
+    html += `<div class="sec">Outstanding <small>${debts.length}</small></div><div class="card" style="padding:8px 16px">`;
+    for(const d of debts.slice(0,5)){
+      html += `<div class="member">
+        <div class="ci warn">${esc(initials(d.member.name))}</div>
+        <div class="m"><b>${esc(d.member.name)}</b><small>Owes ${money(d.owed, focus.currency)}</small></div>
+        ${d.member.phone?`<button class="btn sm wa" type="button" onclick="remindWhatsApp('${focus.id}','${d.member.id}')">Remind</button>`:''}
+      </div>`;
+    }
+    html += `</div>`;
+  }
+
+  if(groups.length>1){
+    html += `<div class="sec">Your groups <small>${groups.length}</small></div>`;
+    for(const g of groups){
+      const c = currentRound(g);
+      const col = c && (g.members||[]).find(m=>m.id===c.collectorId);
+      html += `<div class="gcard ${g.id===focus.id?'active':''}" onclick="openGroup('${g.id}')">
+        <div class="row"><b>${esc(g.name)}</b><span class="pill a">${(g.members||[]).length} members</span></div>
+        <div class="mute" style="margin-top:6px">${money(g.amount,g.currency)} · ${FREQ[g.frequency]||g.frequency} · Next: ${esc(col?col.name:'Done')}</div>
+        <div class="bar"><i style="width:${groupProgress(g)*100}%"></i></div>
+      </div>`;
+    }
+  }
+
+  return html;
+}
+
+function renderGroups(){
+  const groups = S.groups||[];
+  if(!groups.length) return `<div class="empty">No groups yet.<br><br><button class="btn" type="button" onclick="openCreateGroup()">Create group</button></div>`;
+  let html = `<div class="sec">All groups <small>${groups.length}</small></div>`;
+  for(const g of groups){
+    const c = currentRound(g);
+    const col = c && (g.members||[]).find(m=>m.id===c.collectorId);
+    const st = c ? roundStats(g,c) : null;
+    html += `<div class="gcard" onclick="openGroup('${g.id}')">
+      <div class="row"><b>${esc(g.name)}</b><span class="pill a">${money(pot(g),g.currency)} pot</span></div>
+      <div class="mute" style="margin-top:6px">${(g.members||[]).length} members · ${FREQ[g.frequency]||g.frequency} · ${money(g.amount,g.currency)} each</div>
+      <div class="bar"><i style="width:${groupProgress(g)*100}%"></i></div>
+      <div class="row mute" style="margin-top:4px"><span>Next: ${esc(col?col.name:'Complete')}</span><span>${st?st.paid+'/'+st.total+' paid':''}</span></div>
+    </div>`;
+  }
+  return html;
+}
+
+function renderGroupDetail(){
+  const g = getGroup(viewGroupId);
+  if(!g) return `<div class="empty">Group not found.<br><button class="btn s" type="button" onclick="goTab('groups')">Back</button></div>`;
+  const cur = currentRound(g);
+  let html = `<button class="back" type="button" onclick="goTab('groups')">← Groups</button>
+    <div class="hero">
+      <div class="l">${esc(FREQ[g.frequency]||g.frequency)} · ${esc(fmtDate(g.startDate))}</div>
+      <div class="big">${esc(g.name)}</div>
+      <div class="sub">${money(g.amount,g.currency)} × ${(g.members||[]).length} = ${money(pot(g),g.currency)} pot</div>
+      <div class="hstats">
+        <div><small>Collected</small><b>${money(totalCollected(g),g.currency)}</b></div>
+        <div><small>Progress</small><b>${Math.round(groupProgress(g)*100)}%</b></div>
+      </div>
+    </div>
+    <div class="actions" style="margin:0 0 8px">
+      <button class="btn sm wa" type="button" onclick="shareGroupStatus('${g.id}')">Share status</button>
+      <button class="btn sm s" type="button" onclick="openMembersView('${g.id}')">Members</button>
+      <button class="btn sm s" type="button" onclick="confirmDeleteGroup('${g.id}')">Delete</button>
+    </div>`;
+
+  html += `<div class="sec">Rounds <small>${(g.rounds||[]).length}</small></div>`;
+  for(const r of (g.rounds||[])){
+    const st = roundStats(g, r);
+    const col = (g.members||[]).find(m=>m.id===r.collectorId);
+    const isCur = cur && cur.id===r.id;
+    html += `<div class="round ${isCur?'cur':''} ${r.payoutDone?'done':''}" onclick="openRound('${g.id}','${r.id}')">
+      <div class="row">
+        <div><b>Round ${r.index}</b> <span class="mute">· ${esc(fmtDate(r.date))}</span>
+          ${isCur?' <span class="pill a">Current</span>':''}
+          ${r.payoutDone?' <span class="pill g">Paid out</span>':''}
+        </div>
+        <span class="pill ${st.complete?'g':(st.paid?'w':'r')}">${st.paid}/${st.total}</span>
+      </div>
+      <div class="mute" style="margin-top:6px">Collects: <b style="color:var(--ink)">${esc(col?col.name:'?')}</b> · ${money(st.collected,g.currency)} / ${money(st.expected,g.currency)}</div>
+      <div class="bar"><i style="width:${(st.paid/Math.max(1,st.total))*100}%"></i></div>
+    </div>`;
+  }
+
+  // Debts
+  const debts = outstandingDebts(g);
+  if(debts.length){
+    html += `<div class="sec">Debts</div><div class="card" style="padding:8px 16px">`;
+    for(const d of debts){
+      html += `<div class="member">
+        <div class="ci warn">${esc(initials(d.member.name))}</div>
+        <div class="m"><b>${esc(d.member.name)}</b><small>${money(d.owed,g.currency)} outstanding</small></div>
+        ${d.member.phone?`<button class="btn sm wa" type="button" onclick="event.stopPropagation();remindWhatsApp('${g.id}','${d.member.id}')">WhatsApp</button>`:''}
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  return html;
+}
+
+function renderRoundDetail(){
+  const g = getGroup(viewGroupId);
+  if(!g) return `<div class="empty">Group not found.</div>`;
+  const r = (g.rounds||[]).find(x=>x.id===viewRoundId);
+  if(!r) return `<div class="empty">Round not found.<br><button class="btn s" type="button" onclick="openGroup('${g.id}')">Back</button></div>`;
+  const st = roundStats(g, r);
+  const col = (g.members||[]).find(m=>m.id===r.collectorId);
+
+  let html = `<button class="back" type="button" onclick="openGroup('${g.id}')">← ${esc(g.name)}</button>
+    <div class="card">
+      <div class="row"><h3 style="margin:0">Round ${r.index}</h3>
+        ${r.payoutDone?'<span class="pill g">Payout done</span>':'<span class="pill a">Open</span>'}
+      </div>
+      <p class="mute" style="margin:8px 0 0">${esc(fmtDate(r.date))} · Pot ${money(pot(g),g.currency)}</p>
+      <p style="margin:8px 0 0"><b>${esc(col?col.name:'?')}</b> <span class="mute">collects this round</span></p>
+      <div class="bar"><i style="width:${(st.paid/Math.max(1,st.total))*100}%"></i></div>
+      <div class="row mute"><span>${st.paid}/${st.total} paid</span><span>${money(st.collected,g.currency)} / ${money(st.expected,g.currency)}</span></div>
+    </div>
+    <div class="sec">Payments</div>
+    <div class="card" style="padding:8px 16px">`;
+
+  for(const m of (g.members||[])){
+    const p = r.payments && r.payments[m.id];
+    const paid = !!(p && p.paid);
+    const unpaidCls = paid ? 'ok' : 'warn';
+    html += `<div class="member" style="${paid?'':'background:rgba(251,191,36,.06);margin:0 -16px;padding:12px 16px;border-radius:12px'}">
+      <input class="chk" type="checkbox" ${paid?'checked':''} ${r.payoutDone?'disabled':''}
+        onchange="togglePayment('${g.id}','${r.id}','${m.id}',this.checked)">
+      <div class="ci ${unpaidCls}">${esc(initials(m.name))}</div>
+      <div class="m"><b>${esc(m.name)}</b><small>${paid?('Paid '+(p.date?fmtDate(p.date):'')):('Unpaid · '+money(g.amount,g.currency))}</small></div>
+      ${(!paid && m.phone)?`<button class="btn sm wa" type="button" onclick="remindWhatsApp('${g.id}','${m.id}')">Remind</button>`:''}
+    </div>`;
+  }
+  html += `</div>`;
+
+  if(!r.payoutDone){
+    html += `<div class="gap"></div>
+      <button class="btn" type="button" onclick="markPayout('${g.id}','${r.id}')" ${st.complete?'':'style="opacity:.9"'}>Mark payout done to ${esc(col?col.name:'collector')}</button>
+      ${!st.complete?'<p class="mute" style="text-align:center;margin-top:8px">You can mark payout even if some are unpaid (they stay as debt).</p>':''}`;
+  } else {
+    html += `<div class="card"><p class="g" style="margin:0;font-weight:700">✓ Payout recorded ${r.payoutDate?('on '+fmtDate(r.payoutDate)):''}</p>
+      <div class="gap"></div>
+      <button class="btn s" type="button" onclick="undoPayout('${g.id}','${r.id}')">Undo payout</button></div>`;
+  }
+  return html;
+}
+
+function renderSettings(){
+  return `<div class="card">
+      <label>Your name</label>
+      <input id="setName" value="${esc(S.name||'')}" placeholder="e.g. Ismail" onchange="saveName(this.value)">
+      <p class="mute" style="margin:8px 0 0">Shown on the home greeting.</p>
+    </div>
+    <div class="card">
+      <h3>Backup</h3>
+      <p class="mute">Export your groups as JSON, or import a backup on another phone.</p>
+      <div class="gap"></div>
+      <button class="btn" type="button" onclick="exportJSON()">Export JSON</button>
+      <div class="gap"></div>
+      <button class="btn s" type="button" onclick="triggerImport()">Import JSON</button>
+      <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importJSON(event)">
+    </div>
+    <div class="card">
+      <h3>About</h3>
+      <p class="mute" style="margin:0">Susu keeps everything on this phone (localStorage). Free forever — no account needed. Add to Home Screen for the full app feel.</p>
+      <p class="mute">Groups: ${(S.groups||[]).length}</p>
+    </div>`;
+}
+
+/* —— Create group —— */
+function openCreateGroup(){
+  draftMembers = [];
+  const today = todayISO();
+  openSheet(`<div class="row"><h3 style="margin:0">New group</h3><button class="lnk" type="button" onclick="closeSheet()">Close</button></div>
+    <label>Group name</label>
+    <input id="cgName" placeholder="e.g. Office Susu">
+    <label>Contribution amount</label>
+    <input id="cgAmt" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 50">
+    <label>Currency</label>
+    <select id="cgCur">${CURRENCIES.map(c=>`<option value="${c}" ${c==='GHS'?'selected':''}>${c}</option>`).join('')}</select>
+    <label>Frequency</label>
+    <div class="seg" id="cgFreq">
+      <button type="button" class="on" data-f="weekly" onclick="setFreq(this)">Weekly</button>
+      <button type="button" data-f="monthly" onclick="setFreq(this)">Monthly</button>
+      <button type="button" data-f="daily" onclick="setFreq(this)">Daily</button>
+    </div>
+    <label>Start date</label>
+    <input id="cgStart" type="date" value="${today}">
+    <label>Members</label>
+    <div id="cgMembers" class="mute">Add at least 2 members</div>
+    <div class="gap"></div>
+    <div class="row" style="gap:8px">
+      <input id="cgMName" placeholder="Name" style="flex:1">
+      <input id="cgMPhone" placeholder="Phone (optional)" style="flex:1" inputmode="tel">
+    </div>
+    <div class="gap"></div>
+    <button class="btn s" type="button" onclick="addDraftMember()">Add member</button>
+    <div class="gap"></div>
+    <div class="row">
+      <span class="mute">Payout order</span>
+      <button class="lnk" type="button" onclick="shuffleDraft()">Shuffle</button>
+    </div>
+    <div id="cgOrder"></div>
+    <div class="gap"></div>
+    <button class="btn" type="button" onclick="saveGroup()">Create group</button>`);
+  renderDraftMembers();
+}
+
+function setFreq(btn){
+  const seg = $('cgFreq');
+  if(!seg) return;
+  seg.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function getFreq(){
+  const on = document.querySelector('#cgFreq button.on');
+  return (on && on.getAttribute('data-f')) || 'weekly';
+}
+
+function addDraftMember(){
+  const nameEl = $('cgMName');
+  const phoneEl = $('cgMPhone');
+  const name = (nameEl && nameEl.value || '').trim();
+  if(!name){ alert('Enter a member name'); return; }
+  const phone = (phoneEl && phoneEl.value || '').trim();
+  draftMembers.push({id: uid(), name, phone});
+  if(nameEl) nameEl.value = '';
+  if(phoneEl) phoneEl.value = '';
+  renderDraftMembers();
+}
+function removeDraftMember(i){
+  draftMembers.splice(i,1);
+  renderDraftMembers();
+}
+function moveDraft(i, dir){
+  const j = i + dir;
+  if(j<0 || j>=draftMembers.length) return;
+  const t = draftMembers[i];
+  draftMembers[i] = draftMembers[j];
+  draftMembers[j] = t;
+  renderDraftMembers();
+}
+function shuffleDraft(){
+  for(let i=draftMembers.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    const t = draftMembers[i]; draftMembers[i]=draftMembers[j]; draftMembers[j]=t;
+  }
+  renderDraftMembers();
+}
+function renderDraftMembers(){
+  const box = $('cgMembers');
+  const order = $('cgOrder');
+  if(!box) return;
+  if(!draftMembers.length){ box.innerHTML = '<span class="mute">Add at least 2 members</span>'; if(order) order.innerHTML=''; return; }
+  box.innerHTML = draftMembers.map((m,i)=>`<div class="member">
+    <div class="ci">${esc(initials(m.name))}</div>
+    <div class="m"><b>${esc(m.name)}</b><small>${esc(m.phone||'No phone')}</small></div>
+    <button class="lnk" type="button" onclick="removeDraftMember(${i})">Remove</button>
+  </div>`).join('');
+  if(order){
+    order.innerHTML = draftMembers.map((m,i)=>`<div class="drag">
+      <span class="handle">⠿</span>
+      <span style="flex:1"><b>${i+1}. ${esc(m.name)}</b> <span class="mute">collects round ${i+1}</span></span>
+      <button class="lnk" type="button" onclick="moveDraft(${i},-1)">↑</button>
+      <button class="lnk" type="button" onclick="moveDraft(${i},1)">↓</button>
+    </div>`).join('');
+  }
+}
+
+function saveGroup(){
+  const name = ($('cgName')&&$('cgName').value||'').trim();
+  const amount = parseFloat($('cgAmt')&&$('cgAmt').value);
+  const currency = ($('cgCur')&&$('cgCur').value)||'GHS';
+  const frequency = getFreq();
+  const startDate = ($('cgStart')&&$('cgStart').value)||todayISO();
+  if(!name){ alert('Enter a group name'); return; }
+  if(!(amount>0)){ alert('Enter a contribution amount'); return; }
+  if(draftMembers.length<2){ alert('Add at least 2 members'); return; }
+  const g = {
+    id: uid(),
+    name, amount, currency, frequency, startDate,
+    members: draftMembers.map(m => ({id:m.id, name:m.name, phone:m.phone||''})),
+    createdAt: Date.now()
+  };
+  g.rounds = buildRounds(g);
+  S.groups.unshift(g);
+  persist();
+  closeSheet();
+  openGroup(g.id);
+}
+
+/* —— Payments & payout —— */
+function togglePayment(gid, rid, mid, checked){
+  const g = getGroup(gid);
+  if(!g) return;
+  const r = (g.rounds||[]).find(x=>x.id===rid);
+  if(!r || r.payoutDone) return;
+  if(!r.payments) r.payments = {};
+  if(checked) r.payments[mid] = {paid:true, date: todayISO()};
+  else delete r.payments[mid];
+  persist();
+  render();
+}
+
+function markPayout(gid, rid){
+  const g = getGroup(gid);
+  if(!g) return;
+  const r = (g.rounds||[]).find(x=>x.id===rid);
+  if(!r) return;
+  const st = roundStats(g,r);
+  if(!st.complete){
+    if(!confirm('Some members have not paid. Mark payout anyway? Unpaid amounts stay as debt.')) return;
+  }
+  r.payoutDone = true;
+  r.payoutDate = todayISO();
+  persist();
+  render();
+}
+
+function undoPayout(gid, rid){
+  const g = getGroup(gid);
+  if(!g) return;
+  const r = (g.rounds||[]).find(x=>x.id===rid);
+  if(!r) return;
+  if(!confirm('Undo this payout?')) return;
+  r.payoutDone = false;
+  r.payoutDate = null;
+  persist();
+  render();
+}
+
+function openRoundSheet(){
+  // jump to current round
+  const g = getGroup(viewGroupId);
+  if(!g) return;
+  const cur = currentRound(g);
+  if(cur) openRound(g.id, cur.id);
+}
+
+/* —— Members view —— */
+function openMembersView(gid){
+  const g = getGroup(gid);
+  if(!g) return;
+  let html = `<div class="row"><h3 style="margin:0">Members</h3><button class="lnk" type="button" onclick="closeSheet()">Close</button></div>`;
+  for(const m of (g.members||[])){
+    const d = memberDebt(g, m.id);
+    let hist = '';
+    for(const r of (g.rounds||[])){
+      const p = r.payments && r.payments[m.id];
+      const col = r.collectorId===m.id;
+      hist += `<div class="mute" style="padding:4px 0">Round ${r.index}: ${p&&p.paid?'Paid '+fmtDate(p.date):'Unpaid'}${col?' · Collects':''}${r.payoutDone?' · ✓':''}</div>`;
+    }
+    html += `<div class="card">
+      <div class="row"><div class="row" style="gap:10px"><div class="ci">${esc(initials(m.name))}</div><div><b>${esc(m.name)}</b><div class="mute">${esc(m.phone||'No phone')}</div></div></div>
+        ${d.owed?`<span class="pill r">Owes ${money(d.owed,g.currency)}</span>`:`<span class="pill g">Clear</span>`}
+      </div>
+      <div style="margin-top:10px">${hist||'<span class="mute">No rounds</span>'}</div>
+      ${m.phone?`<div class="gap"></div><button class="btn sm wa" type="button" onclick="remindWhatsApp('${g.id}','${m.id}')">Remind on WhatsApp</button>`:''}
+    </div>`;
+  }
+  openSheet(html);
+}
+
+/* —— WhatsApp / share —— */
+function remindWhatsApp(gid, mid){
+  const g = getGroup(gid);
+  if(!g) return;
+  const m = (g.members||[]).find(x=>x.id===mid);
+  if(!m || !m.phone){ alert('No phone number for this member'); return; }
+  const cur = currentRound(g);
+  const roundTxt = cur ? `round ${cur.index} (${fmtDate(cur.date)})` : 'the current round';
+  const text = `Hi ${m.name}, reminder from *${g.name}* susu: please pay ${money(g.amount, g.currency)} for ${roundTxt}. Thank you!`;
+  const phone = waPhone(m.phone);
+  if(!phone){ alert('Could not read that phone number'); return; }
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(text), '_blank');
+}
+
+function shareGroupStatus(gid){
+  const g = getGroup(gid);
+  if(!g) return;
+  const cur = currentRound(g);
+  const col = cur && (g.members||[]).find(m=>m.id===cur.collectorId);
+  const st = cur ? roundStats(g, cur) : null;
+  const debts = outstandingDebts(g);
+  let lines = [
+    `*${g.name}* — Susu update`,
+    `${money(g.amount,g.currency)} · ${FREQ[g.frequency]||g.frequency} · ${(g.members||[]).length} members`,
+    `Pot: ${money(pot(g),g.currency)}`,
+  ];
+  if(cur && st){
+    lines.push(`Round ${cur.index} (${fmtDate(cur.date)}): ${st.paid}/${st.total} paid · ${money(st.collected,g.currency)}/${money(st.expected,g.currency)}`);
+    lines.push(`Collects: ${col?col.name:'?'}`);
+    if(st.unpaid.length) lines.push('Unpaid: '+st.unpaid.map(m=>m.name).join(', '));
+  } else {
+    lines.push('All rounds complete ✓');
+  }
+  if(debts.length) lines.push('Debts: '+debts.map(d=>`${d.member.name} ${money(d.owed,g.currency)}`).join(', '));
+  lines.push(`Progress: ${Math.round(groupProgress(g)*100)}%`);
+  const text = lines.join('\n');
+  if(navigator.share){
+    navigator.share({title:g.name, text}).catch(()=>openWaText(text));
+  } else openWaText(text);
+}
+function openWaText(text){
+  window.open('https://wa.me/?text='+encodeURIComponent(text), '_blank');
+}
+
+/* —— Delete / settings / backup —— */
+function confirmDeleteGroup(gid){
+  const g = getGroup(gid);
+  if(!g) return;
+  if(!confirm('Delete group "'+g.name+'"? This cannot be undone.')) return;
+  S.groups = S.groups.filter(x=>x.id!==gid);
+  persist();
+  viewGroupId = null;
+  goTab('groups');
+}
+function saveName(v){
+  S.name = String(v||'').trim();
+  persist();
+  greet();
+}
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(S,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'susu-backup-'+todayISO()+'.json';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+function triggerImport(){ const f=$('importFile'); if(f) f.click(); }
+function importJSON(ev){
+  const file = ev.target && ev.target.files && ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      if(!data || !Array.isArray(data.groups)){ alert('Invalid backup file'); return; }
+      if(!confirm('Replace all local data with this backup ('+data.groups.length+' groups)?')) return;
+      S = {groups: data.groups, name: data.name||S.name||'', v:1};
+      persist();
+      goTab('home');
+      alert('Import complete');
+    }catch(e){ alert('Could not read that file'); }
+  };
+  reader.readAsText(file);
+  ev.target.value = '';
+}
+
+/* —— Onboarding —— */
+function maybeOnboard(){
+  if(S.name) return;
+  $('ob').classList.add('on');
+  $('ob').innerHTML = `<div class="obw">
+    <div class="oblogo">S</div>
+    <h1>Track your susu, stress-free</h1>
+    <p class="mute">Create a group, tick who has paid, and remind people on WhatsApp — all on your phone, free.</p>
+    <label>Your name</label>
+    <input id="obName" placeholder="e.g. Ismail">
+    <div class="gap"></div>
+    <button class="btn" type="button" onclick="finishOnboard()">Continue</button>
+  </div>`;
+}
+function finishOnboard(){
+  const n = ($('obName')&&$('obName').value||'').trim();
+  if(!n){ alert('Enter your name'); return; }
+  S.name = n;
+  persist();
+  $('ob').classList.remove('on');
+  $('ob').innerHTML = '';
+  render();
+}
+
+/* —— SW —— */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+
+maybeOnboard();
+render();
+</script>
+</body>
+</html>
